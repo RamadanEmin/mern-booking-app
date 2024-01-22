@@ -1,5 +1,10 @@
 import { Link } from 'react-router-dom';
 
+export type SignInFormData = {
+    email: string;
+    password: string;
+};
+
 const SignIn = () => {
     return (
         <form className="flex flex-col gap-5">
