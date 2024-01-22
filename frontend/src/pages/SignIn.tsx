@@ -1,4 +1,8 @@
-import { Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { useMutation, useQueryClient } from 'react-query';
+import * as apiClient from '../api-client';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAppContext } from '../contexts/AppContext';
 
 export type SignInFormData = {
     email: string;
@@ -6,14 +10,36 @@ export type SignInFormData = {
 };
 
 const SignIn = () => {
+    const navigate = useNavigate();
+    const { showToast } = useAppContext();
+    const queryClient = useQueryClient();
+
+    const { register, handleSubmit } = useForm<SignInFormData>();
+
+    const mutation = useMutation(apiClient.signIn, {
+        onSuccess: async () => {
+            showToast({ message: 'Sign in Successful!', type: 'SUCCESS' });
+            await queryClient.invalidateQueries('validateToken');
+            navigate('/');
+        },
+        onError: async (error: Error) => {
+            showToast({ message: error.message, type: 'ERROR' });
+        }
+    });
+
+    const onSubmit = handleSubmit((data) => {
+        mutation.mutate(data);
+    });
+
     return (
-        <form className="flex flex-col gap-5">
+        <form className="flex flex-col gap-5" onSubmit={onSubmit}>
             <h2 className="text-3xl font-bold">Sign In</h2>
             <label className="text-gray-700 text-sm font-bold flex-1">
                 Email
                 <input
                     type='email'
                     className="border rounded w-full py-1 px-2 font-normal"
+                    {...register('email', { required: 'This field is required' })}
                 />
             </label>
             <label className="text-gray-700 text-sm font-bold flex-1">
@@ -21,6 +47,10 @@ const SignIn = () => {
                 <input
                     type='password'
                     className="border rounded w-full py-1 px-2 font-normal"
+                    {...register('password', {
+                        required: 'This field is required',
+                        minLength: { value: 6, message: 'Password must be at least 6 characters' }
+                    })}
                 />
             </label>
             <span className="flex items-center justify-between">
