@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import * as apiClient from '../api-client';
 import { useAppContext } from '../contexts/AppContext';
 import { useNavigate } from 'react-router-dom';
@@ -15,12 +15,14 @@ export type RegisterFormData = {
 const Register = () => {
     const navigate = useNavigate();
     const { showToast } = useAppContext();
-
-    const { register, watch, handleSubmit } = useForm<RegisterFormData>();
+    const queryClient = useQueryClient();
+    
+    const { register, watch, handleSubmit, formState: { errors } } = useForm<RegisterFormData>();
 
     const mutation = useMutation(apiClient.register, {
-        onSuccess: () => {
+        onSuccess: async() => {
             showToast({ message: 'Registration Success!', type: 'SUCCESS' });
+            await queryClient.invalidateQueries('validateToken');
             navigate('/');
         },
         onError: (error: Error) => {
@@ -42,6 +44,9 @@ const Register = () => {
                         className="border rounded w-full py-1 px-2 font-normal"
                         {...register('firstName', { required: 'This field is required' })}
                     />
+                    {errors.firstName && (
+                        <span className="text-red-500">{errors.firstName.message}</span>
+                    )}
                 </label>
 
                 <label className="text-gray-700 text-sm font-bold flex-1">
@@ -50,6 +55,9 @@ const Register = () => {
                         className="border rounded w-full py-1 px-2 font-normal"
                         {...register('lastName', { required: 'This field is required' })}
                     />
+                    {errors.lastName && (
+                        <span className="text-red-500">{errors.lastName.message}</span>
+                    )}
                 </label>
             </div>
             <label className="text-gray-700 text-sm font-bold flex-1">
@@ -59,6 +67,9 @@ const Register = () => {
                     className="border rounded w-full py-1 px-2 font-normal"
                     {...register('email', { required: 'This field is required' })}
                 />
+                {errors.email && (
+                    <span className="text-red-500">{errors.email.message}</span>
+                )}
             </label>
             <label className="text-gray-700 text-sm font-bold flex-1">
                 Password
@@ -70,6 +81,9 @@ const Register = () => {
                         minLength: { value: 6, message: 'Password must be at least 6 characters' }
                     })}
                 />
+                {errors.password && (
+                    <span className="text-red-500">{errors.password.message}</span>
+                )}
             </label>
             <label className="text-gray-700 text-sm font-bold flex-1">
                 Confirm Password
@@ -86,6 +100,9 @@ const Register = () => {
                         }
                     })}
                 />
+                {errors.confirmPassword && (
+                    <span className="text-red-500">{errors.confirmPassword.message}</span>
+                )}
             </label>
             <span>
                 <button

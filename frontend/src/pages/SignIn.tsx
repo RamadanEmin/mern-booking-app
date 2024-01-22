@@ -14,7 +14,7 @@ const SignIn = () => {
     const { showToast } = useAppContext();
     const queryClient = useQueryClient();
 
-    const { register, handleSubmit } = useForm<SignInFormData>();
+    const { register, handleSubmit, formState: { errors } } = useForm<SignInFormData>();
 
     const mutation = useMutation(apiClient.signIn, {
         onSuccess: async () => {
@@ -41,6 +41,9 @@ const SignIn = () => {
                     className="border rounded w-full py-1 px-2 font-normal"
                     {...register('email', { required: 'This field is required' })}
                 />
+                {errors.email && (
+                    <span className="text-red-500">{errors.email.message}</span>
+                )}
             </label>
             <label className="text-gray-700 text-sm font-bold flex-1">
                 Password
@@ -52,6 +55,9 @@ const SignIn = () => {
                         minLength: { value: 6, message: 'Password must be at least 6 characters' }
                     })}
                 />
+                {errors.password && (
+                    <span className="text-red-500">{errors.password.message}</span>
+                )}
             </label>
             <span className="flex items-center justify-between">
                 <span className="text-sm">
