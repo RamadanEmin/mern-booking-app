@@ -2,9 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import mongoose from 'mongoose';
+import cookieParser from 'cookie-parser';
 import userRoutes from './routes/users';
 import authRoutes from './routes/auth';
-import cookieParser from 'cookie-parser';
 
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string);
 
