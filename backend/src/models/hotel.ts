@@ -1,6 +1,7 @@
 import { Schema, model } from 'mongoose';
+import { HotelType } from '../shared/types';
 
-const hotelSchema = new Schema({
+const hotelSchema = new Schema<HotelType>({
     userId: {
         type: String,
         required: true
@@ -57,6 +58,6 @@ const hotelSchema = new Schema({
     }
 });
 
-const Hotel = model('Hotel', hotelSchema);
+const Hotel = model<HotelType>('Hotel', hotelSchema);
 
 export default Hotel;
