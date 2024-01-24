@@ -1,4 +1,5 @@
 import { FormProvider, useForm } from 'react-hook-form';
+import DetailsSection from './DetailsSection';
 
 export type HotelFormData = {
     name: string;
@@ -25,6 +26,7 @@ const ManageHotelForm = ({ isLoading }: Props) => {
     return (
         <FormProvider {...formMethods}>
             <form className="flex flex-col gap-10">
+            <DetailsSection />
                 <span className="flex justify-end">
                     <button
                         disabled={isLoading}
