@@ -2,6 +2,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import DetailsSection from './DetailsSection';
 import TypeSection from './TypeSection';
 import FacilitiesSection from './FacilitiesSection';
+import GuestsSection from './GuestsSection';
 
 export type HotelFormData = {
     name: string;
@@ -31,6 +32,7 @@ const ManageHotelForm = ({ isLoading }: Props) => {
             <DetailsSection />
             <TypeSection />
             <FacilitiesSection />
+            <GuestsSection />
                 <span className="flex justify-end">
                     <button
                         disabled={isLoading}
