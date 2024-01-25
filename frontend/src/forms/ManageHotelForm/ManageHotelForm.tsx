@@ -3,6 +3,7 @@ import DetailsSection from './DetailsSection';
 import TypeSection from './TypeSection';
 import FacilitiesSection from './FacilitiesSection';
 import GuestsSection from './GuestsSection';
+import ImageSection from './ImageSection';
 
 export type HotelFormData = {
     name: string;
@@ -33,6 +34,7 @@ const ManageHotelForm = ({ isLoading }: Props) => {
             <TypeSection />
             <FacilitiesSection />
             <GuestsSection />
+            <ImageSection />
                 <span className="flex justify-end">
                     <button
                         disabled={isLoading}
