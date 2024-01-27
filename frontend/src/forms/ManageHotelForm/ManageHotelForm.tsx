@@ -1,9 +1,11 @@
+import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import DetailsSection from './DetailsSection';
 import TypeSection from './TypeSection';
 import FacilitiesSection from './FacilitiesSection';
 import GuestsSection from './GuestsSection';
 import ImageSection from './ImageSection';
+import { HotelType } from '../../../../backend/src/shared/types';
 
 export type HotelFormData = {
     name: string;
@@ -21,17 +23,25 @@ export type HotelFormData = {
 };
 
 type Props = {
+    hotel?: HotelType;
     onSave: (hotelFormData: FormData) => void;
     isLoading: boolean;
 };
 
-const ManageHotelForm = ({ onSave, isLoading }: Props) => {
+const ManageHotelForm = ({ onSave, isLoading, hotel }: Props) => {
     const formMethods = useForm<HotelFormData>();
-    const { handleSubmit } = formMethods;
+    const { handleSubmit, reset } = formMethods;
+
+    useEffect(() => {
+        reset(hotel);
+    }, [hotel, reset]);
 
     const onSubmit = handleSubmit((formDataJson: HotelFormData) => {
         const formData = new FormData();
 
+        if (hotel) {
+            formData.append('hotelId', hotel._id);
+        }
         formData.append('name', formDataJson.name);
         formData.append('city', formDataJson.city);
         formData.append('country', formDataJson.country);
