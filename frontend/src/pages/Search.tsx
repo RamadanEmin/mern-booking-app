@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useSearchContext } from '../contexts/SearchContext';
 import * as apiClient from '../api-client';
+import SearchResultCard from '../components/SearchResultCard';
 import StarRatingFilter from '../components/StarRatingFilter';
 import HotelTypesFilter from '../components/HotelTypesFilter';
 import FacilitiesFilter from '../components/FacilitiesFilter';
@@ -91,6 +92,9 @@ const Search = () => {
 
                     </select>
                 </div>
+                {hotelData?.data.map((hotel) => (
+                    <SearchResultCard hotel={hotel} />
+                ))}
             </div>
         </div>
     );
