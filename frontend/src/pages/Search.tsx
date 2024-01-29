@@ -1,4 +1,17 @@
+import React, { useState } from 'react';
+import StarRatingFilter from '../components/StarRatingFilter';
+
 const Search = () => {
+    const [selectedStars, setSelectedStars] = useState<string[]>([]);
+
+    const handleStarsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const startRating = event.target.value;
+
+        setSelectedStars((prevStars) => event.target.checked
+            ? [...prevStars, startRating]
+            : prevStars.filter((star) => star !== startRating)
+        );
+    };
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-5">
@@ -7,6 +20,7 @@ const Search = () => {
                     <h3 className="text-lg font-semibold border-b border-slate-300 pb-5">
                         Filter by:
                     </h3>
+                    <StarRatingFilter selectedStar={selectedStars} onChange={handleStarsChange} />
                 </div>
             </div>
 
