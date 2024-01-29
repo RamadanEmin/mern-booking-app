@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import StarRatingFilter from '../components/StarRatingFilter';
+import HotelTypesFilter from '../components/HotelTypesFilter';
 
 const Search = () => {
     const [selectedStars, setSelectedStars] = useState<string[]>([]);
+    const [selectedHotelTypes, setSelectedHotelTypes] = useState<string[]>([]);
 
     const handleStarsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const startRating = event.target.value;
@@ -10,6 +12,15 @@ const Search = () => {
         setSelectedStars((prevStars) => event.target.checked
             ? [...prevStars, startRating]
             : prevStars.filter((star) => star !== startRating)
+        );
+    };
+
+    const handleHotelTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const hotelType = event.target.value;
+
+        setSelectedHotelTypes((prevHotelTypes) => event.target.checked
+            ? [...prevHotelTypes, hotelType]
+            : prevHotelTypes.filter((type) => type !== hotelType)
         );
     };
 
@@ -21,6 +32,7 @@ const Search = () => {
                         Filter by:
                     </h3>
                     <StarRatingFilter selectedStar={selectedStars} onChange={handleStarsChange} />
+                    <HotelTypesFilter selectedHotelTypes={selectedHotelTypes} onChange={handleHotelTypeChange} />
                 </div>
             </div>
 
