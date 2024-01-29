@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import StarRatingFilter from '../components/StarRatingFilter';
 import HotelTypesFilter from '../components/HotelTypesFilter';
 import FacilitiesFilter from '../components/FacilitiesFilter';
+import PriceFilter from '../components/PriceFilter';
 
 const Search = () => {
     const [selectedStars, setSelectedStars] = useState<string[]>([]);
     const [selectedHotelTypes, setSelectedHotelTypes] = useState<string[]>([]);
     const [selectedFacilities, setSelectedFacilities] = useState<string[]>([]);
+    const [selectedPrice, setSelectedPrice] = useState<number | undefined>();
 
     const handleStarsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const startRating = event.target.value;
@@ -45,6 +47,7 @@ const Search = () => {
                     <StarRatingFilter selectedStar={selectedStars} onChange={handleStarsChange} />
                     <HotelTypesFilter selectedHotelTypes={selectedHotelTypes} onChange={handleHotelTypeChange} />
                     <FacilitiesFilter selectedFacilities={selectedFacilities} onChange={handleFacilityChange} />
+                    <PriceFilter selectedPrice={selectedPrice} onChange={(value?: number) => setSelectedPrice(value)} />
                 </div>
             </div>
 
