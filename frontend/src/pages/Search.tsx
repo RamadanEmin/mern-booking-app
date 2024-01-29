@@ -1,14 +1,36 @@
 import React, { useState } from 'react';
+import { useQuery } from 'react-query';
+import { useSearchContext } from '../contexts/SearchContext';
+import * as apiClient from '../api-client';
 import StarRatingFilter from '../components/StarRatingFilter';
 import HotelTypesFilter from '../components/HotelTypesFilter';
 import FacilitiesFilter from '../components/FacilitiesFilter';
 import PriceFilter from '../components/PriceFilter';
 
 const Search = () => {
+    const search = useSearchContext();
+    const [page, setPage] = useState<number>(1);
     const [selectedStars, setSelectedStars] = useState<string[]>([]);
     const [selectedHotelTypes, setSelectedHotelTypes] = useState<string[]>([]);
     const [selectedFacilities, setSelectedFacilities] = useState<string[]>([]);
     const [selectedPrice, setSelectedPrice] = useState<number | undefined>();
+    const [sortOption, setSortOption] = useState<string>('');
+
+    const searchParams = {
+        destination: search.destination,
+        checkIn: search.checkIn.toISOString(),
+        checkOut: search.checkOut.toDateString(),
+        adultCount: search.adultCount.toString(),
+        childCount: search.childCount.toString(),
+        page: page.toString(),
+        stars: selectedStars,
+        types: selectedHotelTypes,
+        facilities: selectedFacilities,
+        maxPrice: selectedPrice?.toString(),
+        sortOption
+    };
+
+    const { data: hotelData } = useQuery(['searchHotels', searchParams], () => apiClient.searchHotels(searchParams));
 
     const handleStarsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const startRating = event.target.value;
@@ -53,7 +75,13 @@ const Search = () => {
 
             <div className="flex flex-col gap-5">
                 <div className="flex justify-between items-center">
+                    <span className="text-xl font-bold">
+                        {hotelData?.pagination.total} Hotels found
+                        {search.destination ? ` in ${search.destination}` : ''}
+                    </span>
                     <select
+                        value={sortOption}
+                        onChange={(event) => setSortOption(event.target.value)}
                         className="p-2 border rounded-md"
                     >
                         <option value="">Sort By</option>
