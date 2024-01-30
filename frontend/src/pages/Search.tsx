@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 import { useSearchContext } from '../contexts/SearchContext';
 import * as apiClient from '../api-client';
 import SearchResultCard from '../components/SearchResultCard';
+import Pagination from '../components/Pagination';
 import StarRatingFilter from '../components/StarRatingFilter';
 import HotelTypesFilter from '../components/HotelTypesFilter';
 import FacilitiesFilter from '../components/FacilitiesFilter';
@@ -95,6 +96,13 @@ const Search = () => {
                 {hotelData?.data.map((hotel) => (
                     <SearchResultCard hotel={hotel} />
                 ))}
+                <div className="">
+                    <Pagination
+                        page={hotelData?.pagination.page || 1}
+                        pages={hotelData?.pagination.pages || 1}
+                        onPageChange={(page) => setPage(page)}
+                    />
+                </div>
             </div>
         </div>
     );
