@@ -1,15 +1,34 @@
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import * as apiClient from '../api-client';
-import BookingDetailSummary from '../components/BookingDetailSummary';
 import { useSearchContext } from '../contexts/SearchContext';
-import { useState } from 'react';
+import BookingDetailSummary from '../components/BookingDetailSummary';
+import { Elements } from '@stripe/react-stripe-js';
+import { useAppContext } from '../contexts/AppContext';
 
 const Booking = () => {
+    const { stripePromise } = useAppContext();
     const search = useSearchContext();
     const { hotelId } = useParams();
 
     const [numberOfNights, setNumberOfNights] = useState<number>(0);
+
+    useEffect(() => {
+        if (search.checkIn && search.checkOut) {
+            const nights = Math.abs(search.checkOut.getTime() - search.checkIn.getTime()) / (1000 * 60 * 60 * 24);
+
+            setNumberOfNights(Math.ceil(nights));
+        }
+    }, [search.checkIn, search.checkOut]);
+
+    const { data: paymentIntentData } = useQuery(
+        'createPaymentIntent',
+        () => apiClient.createPaymentIntent(hotelId as string, numberOfNights.toString()),
+        {
+            enabled: !!hotelId && numberOfNights > 0
+        }
+    );
 
     const { data: hotel } = useQuery(
         'fetchHotelById',
@@ -18,6 +37,8 @@ const Booking = () => {
             enabled: !!hotelId
         }
     );
+
+    const { data: currentUser } = useQuery('fetchCurrentUser', apiClient.fetchCurrentUser);
 
     if (!hotel) {
         return <></>;
@@ -33,6 +54,13 @@ const Booking = () => {
                 numberOfNights={numberOfNights}
                 hotel={hotel}
             />
+            {currentUser && paymentIntentData && (
+                <Elements stripe={stripePromise} options={{
+                    clientSecret: paymentIntentData.clientSecret
+                }}>
+                    <BookingForm />
+                </Elements>
+            )}
         </div>
     );
 };
