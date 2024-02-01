@@ -6,6 +6,7 @@ import { useSearchContext } from '../contexts/SearchContext';
 import BookingDetailSummary from '../components/BookingDetailSummary';
 import { Elements } from '@stripe/react-stripe-js';
 import { useAppContext } from '../contexts/AppContext';
+import BookingForm from '../forms/BookingForm/BookingForm';
 
 const Booking = () => {
     const { stripePromise } = useAppContext();
@@ -58,7 +59,7 @@ const Booking = () => {
                 <Elements stripe={stripePromise} options={{
                     clientSecret: paymentIntentData.clientSecret
                 }}>
-                    <BookingForm />
+                    <BookingForm currentUser={currentUser} paymentIntent={paymentIntentData} />
                 </Elements>
             )}
         </div>
